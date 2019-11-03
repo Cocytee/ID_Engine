@@ -327,17 +327,16 @@ function norm_angle(r::Float64,g::Float64,b::Float64)
 	return tr, tg, tb
 end
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-function normalize(x::Float64,y::Float64,z::Float64) 
-	t_max = maximum(abs.([x,y,z]))
-	return x/t_max , y/t_max , z/t_max
-end
-#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # Intensity -> Distance in pixel for the Lenticular Light Limit (decrease of 60%) | Glow -> Gaussian form factor
 light_distance(intensity,distance,glow) = exp(-(distance/intensity)^(1+glow))
 rd(x,y,z) = sqrt(x^2 + y^2 + z^2)
+
+tetha(x,y) =atan(y,x)
+phi(x,y,z) = z/sqrt(x^2+y^2+z^2)
+
 # TROVER LA BONNE EQUATION
-n_light(xn,yn,zn,idx,idy,idz) = (((xn+yn)-((xn+idx)+(yn+idy)))/(xn+yn))
-#n_light(xn,yn,zn,idx,idy,idz) = (((xn+yn)-((xn+idx)+(yn+idy)))/(xn+yn))
+n_light(x,y,z,idx,idy,idz) = abs(tetha(x,y) - tetha(idx,idy)) * ((abs(idx)+abs(idy)) != 0)
+#n_light(xn,yn,zn,idx,idy,idz) = (3 - (abs(xn+idx)+abs(yn+idy)+abs(zn+idz))) / 3
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function Ray_ID(List::SceneLights,Name::AbstractString)
 	#if object is Source, no shading needed
@@ -351,8 +350,10 @@ function Ray_ID(List::SceneLights,Name::AbstractString)
 	current  = copy(List.Object[Name].Img_map)
 	current[:,:,1:3] .= 0.0
 
+	debug1 = zeros(size(current)[1],size(current)[2])
+
 	#for each light
-	for n in keys(List.Light)
+	for n in keys(sort(List.Light))
 		z = List.Layer[List.Object[Name].Layer].LayerDist - List.Layer[List.Light[n].Layer].LayerDist
 		
 		#for each pixels
@@ -360,28 +361,29 @@ function Ray_ID(List::SceneLights,Name::AbstractString)
 			#ray vector
 			x = (List.Object[Name].Coord[1]-List.Light[n].Coord[1])+(j-1)
 			y = (List.Object[Name].Coord[2]-List.Light[n].Coord[2])+(i-1)
-			#normlization
-			(xn,yn,zn) = normalize(float(x),float(y),float(z))
+
 			#distance between light and pixel
 			r = rd(x,y,z)
-			
+
 			#for each color
 			if (List.Object[Name].Img_map[i,j,4] != 0) 
 				#light vs normals
-				normal_weight = n_light(xn,yn,zn,List.Object[Name].Img_ID[i,j,1],List.Object[Name].Img_ID[i,j,2],List.Object[Name].Img_ID[i,j,3])
+				normal_weight = n_light(x,y,z,List.Object[Name].Img_ID[i,j,1],List.Object[Name].Img_ID[i,j,2],List.Object[Name].Img_ID[i,j,3])
 
-				if ((normal_weight > 0) && (normal_weight <= 1))				
+				debug1[i,j] = normal_weight
+
+				if ( (normal_weight > (pi/2)) && (normal_weight < (pi+(pi/2))) )				
 					#light vs distance
 					li = ((light_distance(List.Light[n].Intensity,r,List.Light[n].GlowAmount).*List.Light[n].Color) .* List.Object[Name].Img_map[i,j,1:3])
 					#applying normals
-					li = li .* normal_weight
+					li = li .* ((pi - abs(normal_weight - pi))/pi)
 					#adding light to pixel
 					current[i,j,1:3] = current[i,j,1:3] .+ li
 				end
 			end
 		end
 	end
-	return current
+	return current,debug1
 end
 
 function Ray_ID(List::SceneLights)
