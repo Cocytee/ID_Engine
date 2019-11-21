@@ -24,7 +24,7 @@ printstyled("DONE\n",bold=false,color=:yellow)
 
 printstyled("Spawning the lights... ",bold=true,color=:bold)
 spwnLight!(sl,"jose",[2,2],"central",20.0,0.0,[1.0,1.0,0.0])
-spwnLight!(sl,"bob",[16,16],"land",10.0,0.0,[1.0,0.0,1.0])
+spwnLight!(sl,"mob",[5,18],"land",20.0,0.0,[1.0,0.0,1.0])
 printstyled("DONE\n",bold=false,color=:yellow)
 
 printstyled("Spawning the objects... ",bold=true,color=:bold)
@@ -34,7 +34,7 @@ printstyled("DONE\n",bold=false,color=:yellow)
 askSceneLights(sl)
 
 printstyled("Processing... ",bold=true,color=:bold)
-pp = Ray_ID(sl,"carreau")
+pp,dd = Ray_ID(sl,"carreau")
 printstyled("DONE\n",bold=false,color=:yellow)
 
 printstyled("Displaying the pictures... ",bold=true,color=:bold)
@@ -44,6 +44,8 @@ subplot(1,3,2)
 imshow(mi)
 subplot(1,3,3)
 imshow(pp)
+scatter(sl.Light["jose"].Coord[1]-sl.Object["carreau"].Coord[1],sl.Light["jose"].Coord[2]-sl.Object["carreau"].Coord[2])
+scatter(sl.Light["mob"].Coord[1]-sl.Object["carreau"].Coord[1],sl.Light["mob"].Coord[2]-sl.Object["carreau"].Coord[2])
 printstyled("DONE\n",bold=false,color=:yellow)
 
 printstyled("ENDING THE TEST...\n",bold=true,color=:light_magenta)
