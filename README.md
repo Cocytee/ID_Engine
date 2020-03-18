@@ -27,4 +27,5 @@ The engine will influence the render so the choosen orientation ,when designing 
 - Mutliples methods for solo and global actions
 - Render function that process the scene
 > Render function does not work
+
 > Cannot decide between polar and cartesian coordinates
