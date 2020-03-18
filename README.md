@@ -1,8 +1,6 @@
 # ID_Engine
 
----
-## UNFINISHED
----
+### ! Work in Progress !
 
 The ID Engine, is a Julia based "realtime shading engine" for 2d graphics.
 
