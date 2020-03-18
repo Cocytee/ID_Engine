@@ -20,7 +20,7 @@ Thanks to the current sprite layer position (2D plan with fixed distance for the
 
 The engine will influence the render so the choosen orientation ,when designing the ID map, with be reproduced on the 2D sprite.
 
-*** That's quite complicated when you can do the same with normal maps and any game engine but that's for the fun of making something on my own ***
+***That's quite complicated when you can do the same with normal maps and any game engine but that's for the fun of making something on my own***
 
 ## Status
 - "Julia Structures" for Lights , Objects and Layers
