@@ -23,8 +23,8 @@ The engine will influence the render so the choosen orientation ,when designing 
 *** That's quite complicated when you can do the same with normal maps and any game engine but that's for the fun of making something on my own ***
 
 ## Status
-"Julia Structures" for Lights , Objects and Layers
-Mutliples methods for solo and global actions
-Render function that process the scene
+- "Julia Structures" for Lights , Objects and Layers
+- Mutliples methods for solo and global actions
+- Render function that process the scene
 > Render function does not work
 > Cannot decide between polar and cartesian coordinates
